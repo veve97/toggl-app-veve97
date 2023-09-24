@@ -26,7 +26,10 @@ export const Projects = ({ projects }: Props) => {
 
     if (filterInput) {
       const filterValue = filterInput.value;
+      
       console.log(filterValue);
+      const filteredProjects = projects.filter((p) => p.user_name === filterValue)
+      console.log(filteredProjects);
     } else {
       console.error('Element s id "filterInput" nebyl nalezen.');
     }
