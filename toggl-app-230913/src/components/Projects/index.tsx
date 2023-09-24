@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation'
 import { Dialog } from '@/components/Dialog'
 import { ProjectForm } from '@/components/ProjectForm'
 
+import {useRef} from 'react'
+
 
 type Props = {
   projects: Project[]
@@ -49,6 +51,8 @@ export const Projects = ({ projects }: Props) => {
      <Dialog open={editingProject !==undefined} close={() => setEditingProject(undefined)}>
        {editingProject !== undefined && <ProjectForm initialValues={editingProject} onSave={saveProject} onCancel={() => setEditingProject(undefined)} />}
      </Dialog>
+     <input type="text" id="filterInput" name = "filterInput"/>
+     <button className="btn-neutral"> Find by user</button>
      <button className="btn-neutral" onClick={() => setEditingProject({id: undefined, name: '', active: true, user_name: process.env.NEXT_PUBLIC_USERNAME!})}>New</button>
      <ProjectList projects={projects} onSelect={selectProject} onToggle={toggleProject} />
    </>
