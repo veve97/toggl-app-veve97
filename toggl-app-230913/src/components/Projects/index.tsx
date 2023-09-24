@@ -17,8 +17,19 @@ type Props = {
 
 export const Projects = ({ projects }: Props) => {
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined)
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
   const router = useRouter()
 
+  const filterProjects = () => {
+
+    const filterInput = document.getElementById('filterInput') as HTMLInputElement;
+
+    if (filterInput) {
+      const filterValue = filterInput.value;
+      console.log(filterValue);
+    } else {
+      console.error('Element s id "filterInput" nebyl nalezen.');
+    }
   const selectProject = (id: number) => () => {
     setEditingProject(projects.find((p) => p.id === id))
   }
@@ -52,7 +63,7 @@ export const Projects = ({ projects }: Props) => {
        {editingProject !== undefined && <ProjectForm initialValues={editingProject} onSave={saveProject} onCancel={() => setEditingProject(undefined)} />}
      </Dialog>
      <input type="text" id="filterInput" name = "filterInput"/>
-     <button className="btn-neutral"> Find by user</button>
+     <button className="btn-neutral" onClick={filterProjects}>Find by user</button>
      <button className="btn-neutral" onClick={() => setEditingProject({id: undefined, name: '', active: true, user_name: process.env.NEXT_PUBLIC_USERNAME!})}>New</button>
      <ProjectList projects={projects} onSelect={selectProject} onToggle={toggleProject} />
    </>
