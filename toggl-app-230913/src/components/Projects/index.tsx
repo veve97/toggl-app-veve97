@@ -16,28 +16,31 @@ type Props = {
 }
 
 export const Projects = ({ projects }: Props) => {
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined)
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
+  
   const router = useRouter()
 
   const filterProjects = () => {
-
-    const filterInput = document.getElementById('filterInput') as HTMLInputElement;
-
-    if (filterInput) {
-      const filterValue = filterInput.value;
-      
-      console.log(filterValue);
+    if (inputRef.current) { 
+      const filterValue = inputRef.current.value
+      if (filterValue === ''){
+      const filteredProjects = projects
+      setFilteredProjects(filteredProjects)
+      }else{
       const filteredProjects = projects.filter((p) => p.user_name === filterValue)
-      console.log(filteredProjects);
-      projects = filteredProjects
-    } else {
-      console.error('Element s id "filterInput" nebyl nalezen.');
+      setFilteredProjects(filteredProjects)
+      }
+      
     }
+  }
+
   const selectProject = (id: number) => () => {
     setEditingProject(projects.find((p) => p.id === id))
   }
 
+  
   const toggleProject = (id: number) => async () => {
     const p = projects.find((p) => p.id === id)!
     const res = await updateProject({ ...p, active: !p.active})
@@ -66,10 +69,10 @@ export const Projects = ({ projects }: Props) => {
      <Dialog open={editingProject !==undefined} close={() => setEditingProject(undefined)}>
        {editingProject !== undefined && <ProjectForm initialValues={editingProject} onSave={saveProject} onCancel={() => setEditingProject(undefined)} />}
      </Dialog>
-     <input type="text" id="filterInput" name = "filterInput"/>
+     <input ref={inputRef} type="text" id="filerInput" name = "filterInput"/>
      <button className="btn-neutral" onClick={filterProjects}>Find by user</button>
      <button className="btn-neutral" onClick={() => setEditingProject({id: undefined, name: '', active: true, user_name: process.env.NEXT_PUBLIC_USERNAME!})}>New</button>
-     <ProjectList projects={projects} onSelect={selectProject} onToggle={toggleProject} />
+     <ProjectList projects={filteredProjects} onSelect={selectProject} onToggle={toggleProject} />
    </>
   )
 }
